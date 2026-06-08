@@ -69,3 +69,14 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Erro ao atualizar voucher" }, { status: 500 });
   }
 }
+
+// Rota para excluir todos os registros (limpeza geral)
+export async function DELETE() {
+  try {
+    const deleteResult = await db.lead.deleteMany({});
+    return NextResponse.json({ success: true, count: deleteResult.count });
+  } catch (error) {
+    console.error("Erro ao excluir todos os leads:", error);
+    return NextResponse.json({ error: "Erro ao deletar registros." }, { status: 500 });
+  }
+}

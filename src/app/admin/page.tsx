@@ -11,10 +11,41 @@ import {
   ArrowLeft,
   Calendar,
   Phone,
-  User,
-  Ticket
+  Ticket,
+  Trash2,
+  TrendingUp,
+  Award
 } from "lucide-react";
 import Link from "next/link";
+
+// Registro e imports do Chart.js
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface Lead {
   id: string;
@@ -31,6 +62,11 @@ export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  
+  // Controle de segurança da exclusão
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [downloadDone, setDownloadDone] = useState(false);
+  const [deleteInputCode, setDeleteInputCode] = useState("");
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -77,15 +113,8 @@ export default function AdminPage() {
     }
   };
 
-  // Filtragem dos leads baseada no input de pesquisa
-  const filteredLeads = leads.filter(lead => 
-    lead.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.whatsapp.includes(searchTerm) ||
-    lead.voucherCode.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   // Exportar dados para CSV
-  const handleExportCSV = () => {
+  const handleExportCSV = (silent = false) => {
     if (leads.length === 0) return;
     
     const headers = ["Nome", "WhatsApp", "Data Nascimento", "Código do Voucher", "Data Cadastro", "Status"];
@@ -105,11 +134,84 @@ export default function AdminPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `participantes_campanha_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `BACKUP_participantes_prestigio_${new Date().toISOString().slice(0, 10)}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    if (silent) {
+      setDownloadDone(true);
+    }
+  };
+
+  // Deletar Tudo
+  const handleDeleteAll = async () => {
+    if (!downloadDone) return;
+    
+    setLoading(true);
+    try {
+      const res = await fetch("/api/voucher", {
+        method: "DELETE",
+      });
+      
+      if (res.ok) {
+        setLeads([]);
+        setShowDeleteModal(false);
+        setDownloadDone(false);
+        setDeleteInputCode("");
+        alert("Todos os dados de cadastro foram excluídos com sucesso do banco de dados!");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao excluir registros.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filtragem dos leads baseada no input de pesquisa
+  const filteredLeads = leads.filter(lead => 
+    lead.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lead.whatsapp.includes(searchTerm) ||
+    lead.voucherCode.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // =========================================================================
+  // PREPARAÇÃO DOS DADOS DO GRÁFICO DE PIZZA (Distribuição de Vouchers)
+  // =========================================================================
+  const totalUtilizados = leads.filter(l => l.status === "Utilizado").length;
+  const totalNaoUtilizados = leads.filter(l => l.status === "Não Utilizado").length;
+
+  const chartData = {
+    labels: ["Vouchers Resgatados (Utilizados)", "Vouchers Não Utilizados"],
+    datasets: [
+      {
+        data: [totalUtilizados, totalNaoUtilizados],
+        backgroundColor: ["#10b981", "#facc15"], // Verde e Amarelo
+        borderColor: ["#059669", "#eab308"],
+        borderWidth: 2,
+        hoverOffset: 8
+      }
+    ]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "right" as const,
+        labels: {
+          font: { family: "Outfit, sans-serif", weight: "bold" as any },
+          padding: 20
+        }
+      },
+      tooltip: {
+        titleFont: { family: "Outfit, sans-serif", weight: "bold" as any },
+        bodyFont: { family: "Outfit, sans-serif" }
+      }
+    }
   };
 
   return (
@@ -133,28 +235,42 @@ export default function AdminPage() {
           </span>
         </div>
 
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
           <button 
             onClick={fetchLeads} 
             disabled={loading}
-            className="flex-1 sm:flex-initial px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-xl transition flex items-center justify-center gap-2 text-sm font-semibold text-slate-600 cursor-pointer"
+            className="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-xl transition flex items-center justify-center gap-2 text-sm font-semibold text-slate-600 cursor-pointer"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             Atualizar
           </button>
+          
           <button 
-            onClick={handleExportCSV}
+            onClick={() => handleExportCSV(false)}
             disabled={leads.length === 0}
-            className="flex-1 sm:flex-initial px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl transition flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl transition flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-50 cursor-pointer"
           >
             <Download className="w-4 h-4" />
             Exportar CSV
+          </button>
+
+          <button 
+            onClick={() => {
+              setDownloadDone(false);
+              setShowDeleteModal(true);
+            }}
+            disabled={leads.length === 0}
+            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl transition flex items-center justify-center gap-2 text-sm font-semibold disabled:opacity-50 cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
+            Excluir Tudo
           </button>
         </div>
       </header>
 
       {/* Main Admin Area */}
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 py-8 space-y-6">
+        
         {/* Métricas rápidas */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
@@ -172,6 +288,17 @@ export default function AdminPage() {
             <p className="text-3xl font-black text-amber-600 mt-1">
               {leads.filter(l => l.status === "Não Utilizado").length}
             </p>
+          </div>
+        </div>
+
+        {/* GRAFICO DE ACOMPANHAMENTO */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
+          <div className="flex items-center gap-2 mb-4 w-full text-left">
+            <Award className="w-5 h-5 text-brand-blue" />
+            <h3 className="font-extrabold text-brand-dark text-lg">Distribuição de Status dos Vouchers</h3>
+          </div>
+          <div className="h-[280px] w-full max-w-md relative">
+            <Doughnut data={chartData} options={chartOptions} />
           </div>
         </div>
 
@@ -267,6 +394,83 @@ export default function AdminPage() {
           </div>
         </div>
       </main>
+
+      {/* MODAL DE SEGURANÇA E EXCLUSÃO */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full border border-slate-200 shadow-2xl space-y-6">
+            <div className="text-center space-y-2">
+              <div className="mx-auto w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-extrabold text-brand-dark">Atenção! Ação Irreversível</h3>
+              <p className="text-sm text-slate-500">
+                Você está prestes a excluir **todos os cadastros** de vouchers do banco de dados permanentemente.
+              </p>
+            </div>
+
+            {/* Passo 1: Download Obrigatório */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+              <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Passo 1: Baixar Backup de Segurança</p>
+              <button
+                onClick={() => handleExportCSV(true)}
+                className={`w-full py-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 cursor-pointer ${
+                  downloadDone 
+                    ? "bg-emerald-500 text-white" 
+                    : "bg-slate-800 hover:bg-slate-900 text-white"
+                }`}
+              >
+                {downloadDone ? (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Backup Realizado!
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    Baixar Relatório CSV
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Passo 2: Confirmar por Código */}
+            {downloadDone && (
+              <div className="space-y-3">
+                <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Passo 2: Digite DELETAR para confirmar</p>
+                <input
+                  type="text"
+                  placeholder="Digite: DELETAR"
+                  value={deleteInputCode}
+                  onChange={(e) => setDeleteInputCode(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-rose-100 focus:border-rose-500 outline-hidden transition text-center font-bold tracking-widest text-slate-700"
+                />
+              </div>
+            )}
+
+            {/* Botões de Decisão */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDownloadDone(false);
+                  setDeleteInputCode("");
+                }}
+                className="flex-1 py-3 border border-slate-200 hover:bg-slate-50 rounded-xl text-slate-600 font-bold text-sm cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteAll}
+                disabled={!downloadDone || deleteInputCode !== "DELETAR" || loading}
+                className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-sm transition disabled:opacity-40 cursor-pointer"
+              >
+                Excluir Tudo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
