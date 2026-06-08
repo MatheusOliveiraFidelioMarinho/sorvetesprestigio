@@ -1,0 +1,18 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Lead {
+  id             String   @id @default(uuid())
+  nome           String
+  whatsapp       String
+  dataNascimento String?
+  voucherCode    String   @unique
+  timestamp      DateTime @default(now())
+  status         String   @default("Não Utilizado")
+}

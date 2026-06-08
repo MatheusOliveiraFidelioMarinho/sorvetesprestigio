@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  
+  /* Paleta de Cores Promocional Sorvetes Prestígio */
+  --color-brand-light: #e0f2fe; /* Azul claro suave para fundos */
+  --color-brand-sky: #38bdf8;   /* Azul claro principal */
+  --color-brand-blue: #0284c7;  /* Azul para destaques e textos de médio contraste */
+  --color-brand-dark: #0c4a6e;  /* Azul escuro para alto contraste e leitura */
+  --color-brand-accent: #facc15;/* Amarelo vibrante para CTAs e urgência */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Custom micro-animations and smooth behaviors */
+.pulse-soft {
+  animation: pulseSoft 2s infinite;
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 6px -1px rgba(250, 204, 21, 0.2), 0 2px 4px -2px rgba(250, 204, 21, 0.2);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 10px 15px -3px rgba(250, 204, 21, 0.4), 0 4px 6px -4px rgba(250, 204, 21, 0.4);
+  }
+}
