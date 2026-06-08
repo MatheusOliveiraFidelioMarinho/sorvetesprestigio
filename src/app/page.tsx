@@ -240,9 +240,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { text: "Ganhe um picolé promocional grátis", desc: "Experimente um dos nossos sabores tradicionais mais amados." },
+              { text: "Ganhe um picolé promocional grátis", desc: "Ganhe um picolé participante nas compras acima de R$ 10,00." },
               { text: "Cadastro rápido e gratuito", desc: "Leva menos de 1 minuto e você já garante o seu." },
-              { text: "Retirada simples no caixa", desc: "Basta ir à loja e apresentar a tela do seu celular." },
+              { text: "Retirada simples no caixa", desc: "Basta ir à loja, realizar sua compra e apresentar a tela." },
               { text: "Exclusivo para Santa Maria - DF", desc: "Campanha especial feita com carinho para nossa região." },
               { text: "Voucher gerado instantaneamente", desc: "Nada de e-mails demorados. Gerou, pegou." },
               { text: "Participação limitada", desc: "Garantimos o estoque para quem cadastrar a tempo." }
@@ -396,6 +396,7 @@ export default function Home() {
                   <h4 className="font-black text-brand-dark text-sm uppercase tracking-wider">Instruções de Resgate:</h4>
                   <ol className="list-decimal list-inside text-sm text-slate-600 space-y-2.5 font-medium">
                     <li><span className="font-bold text-brand-dark">Tire um print</span> desta tela do voucher.</li>
+                    <li>Consuma <span className="font-bold text-brand-dark">acima de R$ 10,00</span> na loja.</li>
                     <li><span className="font-bold text-brand-dark">Apresente o voucher</span> no caixa da Sorvetes Prestígio.</li>
                     <li><span className="font-bold text-brand-dark">Informe o telefone</span> cadastrado para validação.</li>
                     <li><span className="font-bold text-brand-dark">Receba seu benefício</span> promocional grátis!</li>
@@ -440,9 +441,10 @@ export default function Home() {
           <ul className="text-sm text-slate-600 space-y-3 list-disc list-inside font-medium leading-relaxed">
             <li>Válido para uma utilização por pessoa (CPF/WhatsApp).</li>
             <li>Necessário apresentar o voucher gerado no momento do atendimento.</li>
+            <li>Válido exclusivamente mediante compra acima de R$ 10,00 na loja.</li>
             <li>Necessário informar o telefone cadastrado no formulário para validação no caixa.</li>
             <li>Promoção sujeita à disponibilidade de estoque dos picolés participantes.</li>
-            <li>Não cumulativo com outras promoções e descontos vigentes na loja.</li>
+            <li>Não cumulativo com outras promoções e discounts vigentes na loja.</li>
             <li>A empresa poderá encerrar a campanha ao atingir o limite estipulado de vouchers sem aviso prévio.</li>
           </ul>
         </div>
