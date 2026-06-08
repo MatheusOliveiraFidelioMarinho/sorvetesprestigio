@@ -15,4 +15,5 @@ model Lead {
   voucherCode    String   @unique
   timestamp      DateTime @default(now())
   status         String   @default("Não Utilizado")
+  origem         String   @default("Direto/Orgânico")
 }

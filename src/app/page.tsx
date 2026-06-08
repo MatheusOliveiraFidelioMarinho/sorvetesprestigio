@@ -34,8 +34,26 @@ export default function Home() {
   const [dataNascimento, setDataNascimento] = useState("");
   const [concordaPromocoes, setConcordaPromocoes] = useState(false);
   const [errors, setErrors] = useState<{ nome?: string; whatsapp?: string; concorda?: string }>({});
+  const [origem, setOrigem] = useState("Direto/Orgânico");
 
   const formRef = useRef<HTMLDivElement>(null);
+
+  // Detecta a origem pelos parâmetros da URL (UTMs ou ref)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const utmSource = urlParams.get("utm_source");
+      const refParam = urlParams.get("ref");
+
+      if (utmSource === "fb_ads" || utmSource === "instagram_ads" || utmSource === "meta_ads" || urlParams.get("fbclid")) {
+        setOrigem("Tráfego Pago (Meta/Insta)");
+      } else if (refParam === "whatsapp_share") {
+        setOrigem("Indicação WhatsApp");
+      } else if (utmSource) {
+        setOrigem(`Outra Mídia (${utmSource})`);
+      }
+    }
+  }, []);
 
   // Efeito simulando o contador de escassez diminuindo levemente ao longo do tempo (sensação de urgência real)
   useEffect(() => {
@@ -114,6 +132,7 @@ export default function Home() {
           whatsapp,
           dataNascimento,
           voucherCode: code,
+          origem,
         }),
       });
 
@@ -148,7 +167,9 @@ export default function Home() {
 
   // Compartilhar no WhatsApp
   const handleShareWhatsApp = () => {
-    const text = `Ganhei um picolé grátis na Sorvetes Prestígio! Garanta o seu também antes que acabe: ${window.location.origin}`;
+    const currentUrl = typeof window !== "undefined" ? window.location.origin : "";
+    const shareLink = `${currentUrl}/?ref=whatsapp_share`;
+    const text = `Ganhei um picolé grátis na Sorvetes Prestígio! Garanta o seu também antes que acabe: ${shareLink}`;
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   };
@@ -404,21 +425,33 @@ export default function Home() {
                 </div>
 
                 {/* BOTÕES DE AÇÃO */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-2 print:hidden">
-                  <button
-                    onClick={handleDownload}
-                    className="flex-1 py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                <div className="flex flex-col gap-3 pt-2 print:hidden">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={handleDownload}
+                      className="flex-1 py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                    >
+                      <Download className="w-5 h-5" />
+                      BAIXAR VOUCHER
+                    </button>
+                    <button
+                      onClick={handleShareWhatsApp}
+                      className="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                    >
+                      <Share2 className="w-5 h-5" />
+                      COMPARTILHAR NO WHATSAPP
+                    </button>
+                  </div>
+                  
+                  <a
+                    href="https://www.instagram.com/sorvetes_prestigiofc/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:opacity-95 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                   >
-                    <Download className="w-5 h-5" />
-                    BAIXAR VOUCHER
-                  </button>
-                  <button
-                    onClick={handleShareWhatsApp}
-                    className="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                  >
-                    <Share2 className="w-5 h-5" />
-                    COMPARTILHAR
-                  </button>
+                    <span className="text-lg">📸</span>
+                    SEGUIR NO INSTAGRAM
+                  </a>
                 </div>
 
                 <div className="pt-2 text-xs text-slate-400 font-medium">

@@ -55,6 +55,7 @@ interface Lead {
   voucherCode: string;
   timestamp: string;
   status: "Não Utilizado" | "Utilizado";
+  origem?: string;
 }
 
 export default function AdminPage() {
@@ -117,7 +118,7 @@ export default function AdminPage() {
   const handleExportCSV = (silent = false) => {
     if (leads.length === 0) return;
     
-    const headers = ["Nome", "WhatsApp", "Data Nascimento", "Código do Voucher", "Data Cadastro", "Status"];
+    const headers = ["Nome", "WhatsApp", "Data Nascimento", "Código do Voucher", "Data Cadastro", "Status", "Origem"];
     const csvRows = [
       headers.join(","),
       ...leads.map(lead => [
@@ -126,7 +127,8 @@ export default function AdminPage() {
         `"${lead.dataNascimento || ""}"`,
         `"${lead.voucherCode}"`,
         `"${new Date(lead.timestamp).toLocaleString("pt-BR")}"`,
-        `"${lead.status}"`
+        `"${lead.status}"`,
+        `"${lead.origem || "Direto/Orgânico"}"`
       ].join(","))
     ];
     
@@ -183,8 +185,8 @@ export default function AdminPage() {
   const totalUtilizados = leads.filter(l => l.status === "Utilizado").length;
   const totalNaoUtilizados = leads.filter(l => l.status === "Não Utilizado").length;
 
-  const chartData = {
-    labels: ["Vouchers Resgatados (Utilizados)", "Vouchers Não Utilizados"],
+  const statusChartData = {
+    labels: ["Vouchers Utilizados", "Vouchers Não Utilizados"],
     datasets: [
       {
         data: [totalUtilizados, totalNaoUtilizados],
@@ -196,15 +198,35 @@ export default function AdminPage() {
     ]
   };
 
+  // =========================================================================
+  // PREPARAÇÃO DOS DADOS DO GRÁFICO DE ORIGEM (Anúncios vs Indicação)
+  // =========================================================================
+  const totalTrafegoPago = leads.filter(l => l.origem === "Tráfego Pago (Meta/Insta)").length;
+  const totalIndicacaoWpp = leads.filter(l => l.origem === "Indicação WhatsApp").length;
+  const totalDiretoOrganico = leads.filter(l => !l.origem || l.origem === "Direto/Orgânico").length;
+
+  const origemChartData = {
+    labels: ["Tráfego Pago (Ads)", "WhatsApp", "Direto/Orgânico"],
+    datasets: [
+      {
+        data: [totalTrafegoPago, totalIndicacaoWpp, totalDiretoOrganico],
+        backgroundColor: ["#0284c7", "#25d366", "#94a3b8"], // Azul, Verde WhatsApp, Cinza
+        borderColor: ["#0369a1", "#128c7e", "#64748b"],
+        borderWidth: 2,
+        hoverOffset: 8
+      }
+    ]
+  };
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "right" as const,
+        position: "bottom" as const,
         labels: {
-          font: { family: "Outfit, sans-serif", weight: "bold" as any },
-          padding: 20
+          font: { family: "Outfit, sans-serif", weight: "bold" as any, size: 11 },
+          padding: 15
         }
       },
       tooltip: {
@@ -291,14 +313,26 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* GRAFICO DE ACOMPANHAMENTO */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
-          <div className="flex items-center gap-2 mb-4 w-full text-left">
-            <Award className="w-5 h-5 text-brand-blue" />
-            <h3 className="font-extrabold text-brand-dark text-lg">Distribuição de Status dos Vouchers</h3>
+        {/* GRÁFICOS DE ACOMPANHAMENTO (Lado a Lado) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
+            <div className="flex items-center gap-2 mb-4 w-full text-left">
+              <Award className="w-5 h-5 text-brand-blue" />
+              <h3 className="font-extrabold text-brand-dark text-lg">Status dos Vouchers</h3>
+            </div>
+            <div className="h-[260px] w-full max-w-xs relative">
+              <Doughnut data={statusChartData} options={chartOptions} />
+            </div>
           </div>
-          <div className="h-[280px] w-full max-w-md relative">
-            <Doughnut data={chartData} options={chartOptions} />
+
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
+            <div className="flex items-center gap-2 mb-4 w-full text-left">
+              <TrendingUp className="w-5 h-5 text-emerald-600" />
+              <h3 className="font-extrabold text-brand-dark text-lg">Origem dos Cadastros (Tráfego)</h3>
+            </div>
+            <div className="h-[260px] w-full max-w-xs relative">
+              <Doughnut data={origemChartData} options={chartOptions} />
+            </div>
           </div>
         </div>
 
@@ -322,6 +356,7 @@ export default function AdminPage() {
                 <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
                   <th className="px-6 py-4">Cliente</th>
                   <th className="px-6 py-4">WhatsApp</th>
+                  <th className="px-6 py-4">Origem</th>
                   <th className="px-6 py-4">Código do Voucher</th>
                   <th className="px-6 py-4">Data do Cadastro</th>
                   <th className="px-6 py-4 text-center">Status / Ação</th>
@@ -346,6 +381,11 @@ export default function AdminPage() {
                         <span className="inline-flex items-center gap-1.5 text-slate-600">
                           <Phone className="w-3.5 h-3.5 text-brand-blue" />
                           {lead.whatsapp}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center gap-1.5 text-slate-600 text-xs">
+                          {lead.origem || "Direto/Orgânico"}
                         </span>
                       </td>
                       <td className="px-6 py-4">
@@ -384,7 +424,7 @@ export default function AdminPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                    <td colSpan={6} className="px-6 py-12 text-center text-slate-400">
                       Nenhum participante encontrado.
                     </td>
                   </tr>

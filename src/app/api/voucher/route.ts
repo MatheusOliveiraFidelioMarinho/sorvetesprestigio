@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { nome, whatsapp, dataNascimento, voucherCode } = body;
+    const { nome, whatsapp, dataNascimento, voucherCode, origem } = body;
 
     // Validação básica
     if (!nome || !whatsapp || !voucherCode) {
@@ -22,10 +22,11 @@ export async function POST(request: Request) {
         dataNascimento: dataNascimento || null,
         voucherCode,
         status: "Não Utilizado",
+        origem: origem || "Direto/Orgânico",
       },
     });
 
-    console.log("Novo lead cadastrado no Neon DB:", newLead);
+    console.log("Novo lead cadastrado no Neon DB com origem:", newLead);
 
     return NextResponse.json({ success: true, lead: newLead }, { status: 201 });
   } catch (error) {
