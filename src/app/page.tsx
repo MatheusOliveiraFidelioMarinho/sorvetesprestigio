@@ -22,8 +22,6 @@ import confetti from "canvas-confetti";
 
 export default function Home() {
   // Configurações e estados
-  const TOTAL_VOUCHERS = 200;
-  const [vouchersRestantes, setVouchersRestantes] = useState(TOTAL_VOUCHERS);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [voucherCode, setVoucherCode] = useState("");
@@ -53,26 +51,6 @@ export default function Home() {
         setOrigem(`Outra Mídia (${utmSource})`);
       }
     }
-  }, []);
-
-  // Efeito simulando o contador de escassez diminuindo levemente ao longo do tempo (sensação de urgência real)
-  useEffect(() => {
-    // Começa com um valor ligeiramente menor para gerar mais senso de urgência
-    const initialRemaining = Math.floor(Math.random() * 25) + 65; // entre 65 e 90
-    setVouchersRestantes(initialRemaining);
-
-    const interval = setInterval(() => {
-      setVouchersRestantes((prev) => {
-        if (prev <= 7) return prev; // Mantém pelo menos alguns ativos para não frustrar o cliente final
-        // 15% de chance de reduzir 1 voucher a cada intervalo
-        if (Math.random() > 0.8) {
-          return prev - 1;
-        }
-        return prev;
-      });
-    }, 12000);
-
-    return () => clearInterval(interval);
   }, []);
 
   // Máscara e formatação do WhatsApp
@@ -139,8 +117,6 @@ export default function Home() {
       if (response.ok) {
         setVoucherCode(code);
         setFormSubmitted(true);
-        // Diminui um do contador local
-        setVouchersRestantes((prev) => Math.max(prev - 1, 5));
         
         // Dispara efeito de confetes
         confetti({
@@ -229,21 +205,17 @@ export default function Home() {
 
       {/* SEÇÃO DE ESCASSEZ */}
       <section className="w-full max-w-3xl mx-auto px-4 py-6">
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-sm">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-3xl p-6 md:p-8 flex items-center gap-6 shadow-sm justify-center">
           <div className="p-4 bg-brand-accent/30 rounded-2xl text-amber-600">
             <AlertTriangle className="w-10 h-10" />
           </div>
-          <div className="flex-grow text-center md:text-left space-y-2">
+          <div className="text-center space-y-2">
             <h3 className="text-xl md:text-2xl font-extrabold text-brand-dark">
               ⚠️ VOUCHERS LIMITADOS
             </h3>
-            <p className="text-sm md:text-base text-slate-600">
-              Disponibilizamos apenas <span className="font-bold text-amber-600">200 vouchers</span> para esta campanha. Quando forem distribuídos, a promoção será encerrada.
+            <p className="text-sm md:text-base text-slate-700 font-semibold">
+              Disponibilizamos apenas <span className="font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-md">200 Vouchers promocionais</span> para esta campanha. Quando forem distribuídos, a promoção será encerrada.
             </p>
-          </div>
-          <div className="bg-white px-6 py-4 rounded-2xl border border-amber-200 shadow-xs text-center min-w-[140px]">
-            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Restantes</p>
-            <p className="text-3xl font-black text-amber-600 animate-pulse">{vouchersRestantes}</p>
           </div>
         </div>
       </section>
