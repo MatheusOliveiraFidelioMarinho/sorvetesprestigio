@@ -253,7 +253,7 @@ export default function AdminPage() {
             />
           </div>
           <span className="bg-brand-blue/10 text-brand-blue text-xs font-bold px-2.5 py-1 rounded-md">
-            Painel do Caixa / Admin
+            Painel do Caixa / Sorvetes Prestígio
           </span>
         </div>
 

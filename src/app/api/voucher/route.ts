@@ -14,6 +14,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // Verifica duplicidade do telefone
+    const existingLead = await db.lead.findFirst({
+      where: { whatsapp },
+    });
+
+    if (existingLead) {
+      return NextResponse.json(
+        { error: "Este número de WhatsApp já participou da campanha e gerou um voucher." },
+        { status: 400 }
+      );
+    }
+
     // Cria o registro diretamente no Neon DB via Prisma
     const newLead = await db.lead.create({
       data: {

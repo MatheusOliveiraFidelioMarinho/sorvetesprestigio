@@ -150,7 +150,8 @@ export default function Home() {
           colors: ["#38bdf8", "#0284c7", "#facc15", "#ffffff"]
         });
       } else {
-        alert("Ocorreu um erro ao gerar seu voucher. Tente novamente.");
+        const errData = await response.json();
+        alert(errData.error || "Ocorreu um erro ao gerar seu voucher. Tente novamente.");
       }
     } catch (err) {
       console.error(err);
@@ -264,9 +265,9 @@ export default function Home() {
               { text: "Ganhe um picolé promocional grátis", desc: "Ganhe um picolé participante nas compras acima de R$ 10,00." },
               { text: "Cadastro rápido e gratuito", desc: "Leva menos de 1 minuto e você já garante o seu." },
               { text: "Retirada simples no caixa", desc: "Basta ir à loja, realizar sua compra e apresentar a tela." },
-              { text: "Exclusivo para Santa Maria - DF", desc: "Campanha especial feita com carinho para nossa região." },
+              { text: "Válido em Nossas Unidades", desc: "Unidade 320, Unidade 314, Unidade Santa Maria e Unidade Areal." },
               { text: "Voucher gerado instantaneamente", desc: "Nada de e-mails demorados. Gerou, pegou." },
-              { text: "Participação limitada", desc: "Garantimos o estoque para quem cadastrar a tempo." }
+              { text: "Participação limitada", desc: "Limite de 1 picolé por telefone cadastrado." }
             ].map((beneficio, index) => (
               <div 
                 key={index}
@@ -472,10 +473,10 @@ export default function Home() {
           </div>
           
           <ul className="text-sm text-slate-600 space-y-3 list-disc list-inside font-medium leading-relaxed">
-            <li>Válido para uma utilização por pessoa (CPF/WhatsApp).</li>
+            <li>Válido exclusivamente para a retirada de 1 (um) picolé por número de telefone / CPF cadastrado.</li>
+            <li>A verificação no caixa será realizada mediante apresentação de documento oficial com foto ou WhatsApp aberto que comprove o número registrado no cadastro.</li>
             <li>Necessário apresentar o voucher gerado no momento do atendimento.</li>
             <li>Válido exclusivamente mediante compra acima de R$ 10,00 na loja.</li>
-            <li>Necessário informar o telefone cadastrado no formulário para validação no caixa.</li>
             <li>Promoção sujeita à disponibilidade de estoque dos picolés participantes.</li>
             <li>Não cumulativo com outras promoções e discounts vigentes na loja.</li>
             <li>A empresa poderá encerrar a campanha ao atingir o limite estipulado de vouchers sem aviso prévio.</li>
