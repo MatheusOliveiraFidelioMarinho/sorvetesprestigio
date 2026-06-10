@@ -387,6 +387,10 @@ export default function Home() {
 
                 {/* INSTRUÇÕES */}
                 <div className="text-left bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-3">
+                  <div className="bg-yellow-50 border border-yellow-200 text-brand-dark p-3.5 rounded-xl font-bold text-xs flex items-center gap-2 mb-2">
+                    <span>⏰</span>
+                    <span>Apresente seu cupom no caixa em até 7 dias para retirar seu Picolé!</span>
+                  </div>
                   <h4 className="font-black text-brand-dark text-sm uppercase tracking-wider">Instruções de Resgate:</h4>
                   <ol className="list-decimal list-inside text-sm text-slate-600 space-y-2.5 font-medium">
                     <li><span className="font-bold text-brand-dark">Tire um print</span> desta tela do voucher.</li>
@@ -447,6 +451,7 @@ export default function Home() {
           <ul className="text-sm text-slate-600 space-y-3 list-disc list-inside font-medium leading-relaxed">
             <li>Válido exclusivamente para a retirada de 1 (um) picolé por número de telefone / CPF cadastrado.</li>
             <li>A verificação no caixa será realizada mediante apresentação de documento oficial com foto ou WhatsApp aberto que comprove o número registrado no cadastro.</li>
+            <li>O voucher gerado possui validade de 7 (sete) dias corridos a partir da data de cadastro.</li>
             <li>Necessário apresentar o voucher gerado no momento do atendimento.</li>
             <li>Válido exclusivamente mediante compra acima de R$ 10,00 na loja.</li>
             <li>Promoção sujeita à disponibilidade de estoque dos picolés participantes.</li>
