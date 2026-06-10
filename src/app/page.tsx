@@ -118,6 +118,11 @@ export default function Home() {
         setVoucherCode(code);
         setFormSubmitted(true);
         
+        // Envia o evento de conversão do Meta Pixel (Lead) de forma segura
+        if (typeof window !== "undefined" && (window as any).fbq) {
+          (window as any).fbq("track", "Lead");
+        }
+        
         // Dispara efeito de confetes
         confetti({
           particleCount: 150,
