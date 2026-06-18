@@ -232,18 +232,17 @@ export default function AdminPage() {
   // =========================================================================
   // PREPARAÇÃO DOS DADOS DO GRÁFICO DE UNIDADES (Distribuição por Loja)
   // =========================================================================
-  const totalUnidade320 = leads.filter(l => l.unidade === "Unidade 320").length;
-  const totalUnidade314 = leads.filter(l => l.unidade === "Unidade 314").length;
+  const totalUnidadeSamambaia = leads.filter(l => l.unidade === "Unidade Samambaia" || l.unidade === "Unidade 320" || l.unidade === "Unidade 314").length;
   const totalUnidadeSantaMaria = leads.filter(l => !l.unidade || l.unidade === "Unidade Santa Maria").length;
   const totalUnidadeAreal = leads.filter(l => l.unidade === "Unidade Areal").length;
 
   const unidadeChartData = {
-    labels: ["Unidade 320", "Unidade 314", "Unidade Santa Maria", "Unidade Areal"],
+    labels: ["Unidade Samambaia", "Unidade Santa Maria", "Unidade Areal"],
     datasets: [
       {
-        data: [totalUnidade320, totalUnidade314, totalUnidadeSantaMaria, totalUnidadeAreal],
-        backgroundColor: ["#f43f5e", "#a855f7", "#06b6d4", "#f59e0b"], // Rosa, Roxo, Ciano, Amarelo/Laranja
-        borderColor: ["#e11d48", "#9333ea", "#0891b2", "#d97706"],
+        data: [totalUnidadeSamambaia, totalUnidadeSantaMaria, totalUnidadeAreal],
+        backgroundColor: ["#f43f5e", "#06b6d4", "#f59e0b"], // Rosa, Ciano, Amarelo/Laranja
+        borderColor: ["#e11d48", "#0891b2", "#d97706"],
         borderWidth: 2,
         hoverOffset: 8
       }
@@ -457,7 +456,9 @@ export default function AdminPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center gap-1.5 text-slate-700 text-xs font-bold">
-                          {lead.unidade || "Unidade Santa Maria"}
+                          {lead.unidade === "Unidade 320" || lead.unidade === "Unidade 314" || lead.unidade === "Unidade Samambaia"
+                            ? "Unidade Samambaia"
+                            : (lead.unidade || "Unidade Santa Maria")}
                         </span>
                       </td>
                       <td className="px-6 py-4">

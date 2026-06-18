@@ -55,10 +55,8 @@ export default function Home() {
 
       if (unitParam) {
         const paramClean = unitParam.toLowerCase().trim();
-        if (paramClean === "320") {
-          setUnidade("Unidade 320");
-        } else if (paramClean === "314") {
-          setUnidade("Unidade 314");
+        if (paramClean === "320" || paramClean === "314" || paramClean.includes("samambaia")) {
+          setUnidade("Unidade Samambaia");
         } else if (paramClean.includes("santa") || paramClean.includes("maria")) {
           setUnidade("Unidade Santa Maria");
         } else if (paramClean.includes("areal")) {
@@ -358,8 +356,7 @@ export default function Home() {
                       className={`w-full px-4 py-3.5 rounded-xl border ${errors.unidade ? "border-red-500 focus:ring-red-200" : "border-slate-200 focus:ring-sky-200"} focus:border-brand-sky outline-hidden focus:ring-4 transition text-slate-600 bg-white`}
                     >
                       <option value="">Selecione uma unidade...</option>
-                      <option value="Unidade 320">Unidade 320 (Samambaia Sul QN 320)</option>
-                      <option value="Unidade 314">Unidade 314 (Samambaia QR 314)</option>
+                      <option value="Unidade Samambaia">Unidade Samambaia (QN 320 / QR 314)</option>
                       <option value="Unidade Santa Maria">Unidade Santa Maria (Santa Maria)</option>
                       <option value="Unidade Areal">Unidade Areal (Areal)</option>
                     </select>
