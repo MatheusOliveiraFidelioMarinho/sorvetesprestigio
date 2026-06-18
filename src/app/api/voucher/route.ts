@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { nome, whatsapp, dataNascimento, voucherCode, origem } = body;
+    const { nome, whatsapp, dataNascimento, voucherCode, origem, unidade } = body;
 
     // Validação básica
     if (!nome || !whatsapp || !voucherCode) {
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
         voucherCode,
         status: "Não Utilizado",
         origem: origem || "Direto/Orgânico",
+        unidade: unidade || "Unidade Santa Maria",
       },
     });
 

@@ -30,18 +30,20 @@ export default function Home() {
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsApp] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
+  const [unidade, setUnidade] = useState("");
   const [concordaPromocoes, setConcordaPromocoes] = useState(false);
-  const [errors, setErrors] = useState<{ nome?: string; whatsapp?: string; concorda?: string }>({});
+  const [errors, setErrors] = useState<{ nome?: string; whatsapp?: string; concorda?: string; unidade?: string }>({});
   const [origem, setOrigem] = useState("Direto/Orgânico");
 
   const formRef = useRef<HTMLDivElement>(null);
 
-  // Detecta a origem pelos parâmetros da URL (UTMs ou ref)
+  // Detecta a origem e a unidade pelos parâmetros da URL (UTMs, ref, ou unidade)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
       const utmSource = urlParams.get("utm_source");
       const refParam = urlParams.get("ref");
+      const unitParam = urlParams.get("unidade") || urlParams.get("unit");
 
       if (utmSource === "fb_ads" || utmSource === "instagram_ads" || utmSource === "meta_ads" || urlParams.get("fbclid")) {
         setOrigem("Tráfego Pago (Meta/Insta)");
@@ -49,6 +51,19 @@ export default function Home() {
         setOrigem("Indicação WhatsApp");
       } else if (utmSource) {
         setOrigem(`Outra Mídia (${utmSource})`);
+      }
+
+      if (unitParam) {
+        const paramClean = unitParam.toLowerCase().trim();
+        if (paramClean === "320") {
+          setUnidade("Unidade 320");
+        } else if (paramClean === "314") {
+          setUnidade("Unidade 314");
+        } else if (paramClean.includes("santa") || paramClean.includes("maria")) {
+          setUnidade("Unidade Santa Maria");
+        } else if (paramClean.includes("areal")) {
+          setUnidade("Unidade Areal");
+        }
       }
     }
   }, []);
@@ -74,7 +89,7 @@ export default function Home() {
   // Validação e Envio
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: { nome?: string; whatsapp?: string; concorda?: string } = {};
+    const newErrors: { nome?: string; whatsapp?: string; concorda?: string; unidade?: string } = {};
 
     if (!nome.trim()) {
       newErrors.nome = "Por favor, digite seu nome completo.";
@@ -83,6 +98,10 @@ export default function Home() {
     const cleanWhatsApp = whatsapp.replace(/\D/g, "");
     if (cleanWhatsApp.length < 10) {
       newErrors.whatsapp = "Por favor, digite um número de WhatsApp válido.";
+    }
+
+    if (!unidade) {
+      newErrors.unidade = "Por favor, selecione qual unidade deseja retirar seu picolé.";
     }
 
     if (!concordaPromocoes) {
@@ -111,6 +130,7 @@ export default function Home() {
           dataNascimento,
           voucherCode: code,
           origem,
+          unidade,
         }),
       });
 
@@ -327,6 +347,25 @@ export default function Home() {
                     />
                   </div>
 
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-brand-blue" />
+                      Unidade de Retirada *
+                    </label>
+                    <select
+                      value={unidade}
+                      onChange={(e) => setUnidade(e.target.value)}
+                      className={`w-full px-4 py-3.5 rounded-xl border ${errors.unidade ? "border-red-500 focus:ring-red-200" : "border-slate-200 focus:ring-sky-200"} focus:border-brand-sky outline-hidden focus:ring-4 transition text-slate-600 bg-white`}
+                    >
+                      <option value="">Selecione uma unidade...</option>
+                      <option value="Unidade 320">Unidade 320 (Samambaia Sul QN 320)</option>
+                      <option value="Unidade 314">Unidade 314 (Samambaia QR 314)</option>
+                      <option value="Unidade Santa Maria">Unidade Santa Maria (Santa Maria)</option>
+                      <option value="Unidade Areal">Unidade Areal (Areal)</option>
+                    </select>
+                    {errors.unidade && <p className="text-xs text-red-500 font-semibold">{errors.unidade}</p>}
+                  </div>
+
                   <div className="space-y-3 pt-2">
                     <label className="flex items-start gap-3 cursor-pointer select-none">
                       <input
@@ -384,9 +423,16 @@ export default function Home() {
                     {voucherCode}
                   </p>
 
-                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-brand-blue font-bold">
-                    <QrCode className="w-4 h-4" />
-                    APRESENTE NO CAIXA DA LOJA
+                  <div className="mt-4 flex flex-col items-center justify-center gap-1.5 text-xs text-brand-blue font-bold">
+                    <div className="flex items-center gap-2">
+                      <QrCode className="w-4 h-4" />
+                      APRESENTE NO CAIXA DA LOJA
+                    </div>
+                    {unidade && (
+                      <div className="mt-2 bg-brand-blue text-white px-3.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase">
+                        Retirada: {unidade}
+                      </div>
+                    )}
                   </div>
                 </div>
 

@@ -14,7 +14,8 @@ import {
   Ticket,
   Trash2,
   TrendingUp,
-  Award
+  Award,
+  MapPin
 } from "lucide-react";
 import Link from "next/link";
 
@@ -56,11 +57,13 @@ interface Lead {
   timestamp: string;
   status: "Não Utilizado" | "Utilizado";
   origem?: string;
+  unidade?: string;
 }
 
 export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<"Não Utilizado" | "Utilizado">("Não Utilizado");
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   
@@ -118,7 +121,7 @@ export default function AdminPage() {
   const handleExportCSV = (silent = false) => {
     if (leads.length === 0) return;
     
-    const headers = ["Nome", "WhatsApp", "Data Nascimento", "Código do Voucher", "Data Cadastro", "Status", "Origem"];
+    const headers = ["Nome", "WhatsApp", "Data Nascimento", "Código do Voucher", "Data Cadastro", "Status", "Origem", "Unidade"];
     const csvRows = [
       headers.join(","),
       ...leads.map(lead => [
@@ -128,7 +131,8 @@ export default function AdminPage() {
         `"${lead.voucherCode}"`,
         `"${new Date(lead.timestamp).toLocaleString("pt-BR")}"`,
         `"${lead.status}"`,
-        `"${lead.origem || "Direto/Orgânico"}"`
+        `"${lead.origem || "Direto/Orgânico"}"`,
+        `"${lead.unidade || "Unidade Santa Maria"}"`
       ].join(","))
     ];
     
@@ -172,12 +176,19 @@ export default function AdminPage() {
     }
   };
 
-  // Filtragem dos leads baseada no input de pesquisa
-  const filteredLeads = leads.filter(lead => 
-    lead.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.whatsapp.includes(searchTerm) ||
-    lead.voucherCode.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtragem dos leads baseada no status da aba ativa e no input de pesquisa
+  const filteredLeads = leads.filter(lead => {
+    // Primeiro, filtra pelo status da aba ativa
+    if (lead.status !== activeTab) return false;
+
+    // Depois, aplica o filtro de busca textual
+    return (
+      lead.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lead.whatsapp.includes(searchTerm) ||
+      lead.voucherCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (lead.unidade && lead.unidade.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
 
   // =========================================================================
   // PREPARAÇÃO DOS DADOS DO GRÁFICO DE PIZZA (Distribuição de Vouchers)
@@ -212,6 +223,27 @@ export default function AdminPage() {
         data: [totalTrafegoPago, totalIndicacaoWpp, totalDiretoOrganico],
         backgroundColor: ["#0284c7", "#25d366", "#94a3b8"], // Azul, Verde WhatsApp, Cinza
         borderColor: ["#0369a1", "#128c7e", "#64748b"],
+        borderWidth: 2,
+        hoverOffset: 8
+      }
+    ]
+  };
+
+  // =========================================================================
+  // PREPARAÇÃO DOS DADOS DO GRÁFICO DE UNIDADES (Distribuição por Loja)
+  // =========================================================================
+  const totalUnidade320 = leads.filter(l => l.unidade === "Unidade 320").length;
+  const totalUnidade314 = leads.filter(l => l.unidade === "Unidade 314").length;
+  const totalUnidadeSantaMaria = leads.filter(l => !l.unidade || l.unidade === "Unidade Santa Maria").length;
+  const totalUnidadeAreal = leads.filter(l => l.unidade === "Unidade Areal").length;
+
+  const unidadeChartData = {
+    labels: ["Unidade 320", "Unidade 314", "Unidade Santa Maria", "Unidade Areal"],
+    datasets: [
+      {
+        data: [totalUnidade320, totalUnidade314, totalUnidadeSantaMaria, totalUnidadeAreal],
+        backgroundColor: ["#f43f5e", "#a855f7", "#06b6d4", "#f59e0b"], // Rosa, Roxo, Ciano, Amarelo/Laranja
+        borderColor: ["#e11d48", "#9333ea", "#0891b2", "#d97706"],
         borderWidth: 2,
         hoverOffset: 8
       }
@@ -313,8 +345,8 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* GRÁFICOS DE ACOMPANHAMENTO (Lado a Lado) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* GRÁFICOS DE ACOMPANHAMENTO (Três Colunas) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
             <div className="flex items-center gap-2 mb-4 w-full text-left">
               <Award className="w-5 h-5 text-brand-blue" />
@@ -328,10 +360,20 @@ export default function AdminPage() {
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
             <div className="flex items-center gap-2 mb-4 w-full text-left">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
-              <h3 className="font-extrabold text-brand-dark text-lg">Origem dos Cadastros (Tráfego)</h3>
+              <h3 className="font-extrabold text-brand-dark text-lg">Origem dos Cadastros</h3>
             </div>
             <div className="h-[260px] w-full max-w-xs relative">
               <Doughnut data={origemChartData} options={chartOptions} />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col items-center">
+            <div className="flex items-center gap-2 mb-4 w-full text-left">
+              <MapPin className="w-5 h-5 text-rose-500" />
+              <h3 className="font-extrabold text-brand-dark text-lg">Cadastros por Unidade</h3>
+            </div>
+            <div className="h-[260px] w-full max-w-xs relative">
+              <Doughnut data={unidadeChartData} options={chartOptions} />
             </div>
           </div>
         </div>
@@ -341,11 +383,35 @@ export default function AdminPage() {
           <Search className="text-slate-400 w-5 h-5 flex-shrink-0" />
           <input
             type="text"
-            placeholder="Pesquise por Nome, WhatsApp ou Código do Voucher..."
+            placeholder="Pesquise por Nome, WhatsApp, Código ou Unidade..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-transparent border-0 outline-hidden text-slate-700 placeholder-slate-400 text-sm"
           />
+        </div>
+
+        {/* Abas de Status dos Vouchers */}
+        <div className="flex gap-2 border-b border-slate-200">
+          <button
+            onClick={() => setActiveTab("Não Utilizado")}
+            className={`px-6 py-3 font-bold text-sm transition-all border-b-2 rounded-t-xl cursor-pointer ${
+              activeTab === "Não Utilizado"
+                ? "border-amber-500 text-amber-600 bg-amber-50/30"
+                : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
+            }`}
+          >
+            Não Utilizados ({leads.filter(l => l.status === "Não Utilizado").length})
+          </button>
+          <button
+            onClick={() => setActiveTab("Utilizado")}
+            className={`px-6 py-3 font-bold text-sm transition-all border-b-2 rounded-t-xl cursor-pointer ${
+              activeTab === "Utilizado"
+                ? "border-emerald-500 text-emerald-600 bg-emerald-50/30"
+                : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
+            }`}
+          >
+            Utilizados ({leads.filter(l => l.status === "Utilizado").length})
+          </button>
         </div>
 
         {/* Tabela de Vouchers */}
@@ -357,6 +423,7 @@ export default function AdminPage() {
                   <th className="px-6 py-4">Cliente</th>
                   <th className="px-6 py-4">WhatsApp</th>
                   <th className="px-6 py-4">Origem</th>
+                  <th className="px-6 py-4">Unidade</th>
                   <th className="px-6 py-4">Código do Voucher</th>
                   <th className="px-6 py-4">Data do Cadastro</th>
                   <th className="px-6 py-4 text-center">Status / Ação</th>
@@ -386,6 +453,11 @@ export default function AdminPage() {
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center gap-1.5 text-slate-600 text-xs">
                           {lead.origem || "Direto/Orgânico"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center gap-1.5 text-slate-700 text-xs font-bold">
+                          {lead.unidade || "Unidade Santa Maria"}
                         </span>
                       </td>
                       <td className="px-6 py-4">
@@ -424,7 +496,7 @@ export default function AdminPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-slate-400">
+                    <td colSpan={7} className="px-6 py-12 text-center text-slate-400">
                       Nenhum participante encontrado.
                     </td>
                   </tr>

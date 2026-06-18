@@ -16,4 +16,5 @@ model Lead {
   timestamp      DateTime @default(now())
   status         String   @default("Não Utilizado")
   origem         String   @default("Direto/Orgânico")
+  unidade        String   @default("Unidade Santa Maria")
 }
