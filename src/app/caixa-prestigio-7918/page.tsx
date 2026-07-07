@@ -64,6 +64,7 @@ export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"Não Utilizado" | "Utilizado">("Não Utilizado");
+  const [activeSubTab, setActiveSubTab] = useState<"todos" | "Unidade Samambaia" | "Unidade Santa Maria" | "Unidade Areal">("todos");
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   
@@ -176,10 +177,27 @@ export default function AdminPage() {
     }
   };
 
-  // Filtragem dos leads baseada no status da aba ativa e no input de pesquisa
+  // Filtragem dos leads baseada no status da aba ativa, sub-aba de unidade e no input de pesquisa
   const filteredLeads = leads.filter(lead => {
     // Primeiro, filtra pelo status da aba ativa
     if (lead.status !== activeTab) return false;
+
+    // Segundo, filtra pela sub-aba de unidade ativa
+    if (activeSubTab !== "todos") {
+      if (activeSubTab === "Unidade Samambaia") {
+        if (lead.unidade !== "Unidade Samambaia" && lead.unidade !== "Unidade 320" && lead.unidade !== "Unidade 314") {
+          return false;
+        }
+      } else if (activeSubTab === "Unidade Santa Maria") {
+        if (lead.unidade && lead.unidade !== "Unidade Santa Maria") {
+          return false;
+        }
+      } else {
+        if (lead.unidade !== activeSubTab) {
+          return false;
+        }
+      }
+    }
 
     // Depois, aplica o filtro de busca textual
     return (
@@ -392,7 +410,10 @@ export default function AdminPage() {
         {/* Abas de Status dos Vouchers */}
         <div className="flex gap-2 border-b border-slate-200">
           <button
-            onClick={() => setActiveTab("Não Utilizado")}
+            onClick={() => {
+              setActiveTab("Não Utilizado");
+              setActiveSubTab("todos");
+            }}
             className={`px-6 py-3 font-bold text-sm transition-all border-b-2 rounded-t-xl cursor-pointer ${
               activeTab === "Não Utilizado"
                 ? "border-amber-500 text-amber-600 bg-amber-50/30"
@@ -402,7 +423,10 @@ export default function AdminPage() {
             Não Utilizados ({leads.filter(l => l.status === "Não Utilizado").length})
           </button>
           <button
-            onClick={() => setActiveTab("Utilizado")}
+            onClick={() => {
+              setActiveTab("Utilizado");
+              setActiveSubTab("todos");
+            }}
             className={`px-6 py-3 font-bold text-sm transition-all border-b-2 rounded-t-xl cursor-pointer ${
               activeTab === "Utilizado"
                 ? "border-emerald-500 text-emerald-600 bg-emerald-50/30"
@@ -411,6 +435,45 @@ export default function AdminPage() {
           >
             Utilizados ({leads.filter(l => l.status === "Utilizado").length})
           </button>
+        </div>
+
+        {/* Sub-abas de Unidades (Filtro Secundário) */}
+        <div className="flex flex-wrap gap-2 mt-3 pb-2 border-b border-slate-100">
+          {[
+            { id: "todos", label: "Todos" },
+            { id: "Unidade Samambaia", label: "Samambaia" },
+            { id: "Unidade Santa Maria", label: "Santa Maria" },
+            { id: "Unidade Areal", label: "Areal" }
+          ].map((subTab) => {
+            // Conta a quantidade de leads com base no status selecionado (activeTab) e unidade
+            let count = 0;
+            if (subTab.id === "todos") {
+              count = leads.filter(l => l.status === activeTab).length;
+            } else if (subTab.id === "Unidade Samambaia") {
+              count = leads.filter(l => l.status === activeTab && (l.unidade === "Unidade Samambaia" || l.unidade === "Unidade 320" || l.unidade === "Unidade 314")).length;
+            } else {
+              if (subTab.id === "Unidade Santa Maria") {
+                count = leads.filter(l => l.status === activeTab && (!l.unidade || l.unidade === "Unidade Santa Maria")).length;
+              } else {
+                count = leads.filter(l => l.status === activeTab && l.unidade === subTab.id).length;
+              }
+            }
+
+            const isSelected = activeSubTab === subTab.id;
+            return (
+              <button
+                key={subTab.id}
+                onClick={() => setActiveSubTab(subTab.id as any)}
+                className={`px-4 py-2 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-slate-800 text-white shadow-sm"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-600"
+                }`}
+              >
+                {subTab.label} ({count})
+              </button>
+            );
+          })}
         </div>
 
         {/* Tabela de Vouchers */}
