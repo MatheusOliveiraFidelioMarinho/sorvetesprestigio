@@ -9,8 +9,8 @@ já rodados no banco de produção** e fluxo testado de ponta a ponta.
 | Migration no Neon | ✅ aplicada (560 registros preservados) |
 | Backfill de `expiraEm` | ✅ 560 registros preenchidos |
 | Testes de ponta a ponta | ✅ segurança, duplicidade por campanha, UTM, 20 vouchers sem colisão |
-| `PAINEL_SENHA` na Vercel | ☐ **pendente** |
-| Deploy | ☐ pendente |
+| `PAINEL_SENHA` na Vercel | ✅ cadastrada e login testado |
+| Deploy em produção | ✅ no ar (`main` @ 10902d2) |
 
 Registros de teste criados durante a validação foram removidos: a base voltou a
 560 cadastros / 134 utilizados / 0 na campanha nova.
@@ -161,8 +161,20 @@ garantido.
 | ✅ | CSV com colunas novas + "Exportar não resgatados" | botão mostra a contagem |
 | ✅ | 20 vouchers seguidos sem código duplicado | 20/20, zero colisões |
 
-Falta repetir o essencial no preview da Vercel depois do deploy — principalmente
-o login do painel, que depende da `PAINEL_SENHA` estar cadastrada lá.
+### Reverificado em produção (www.sorvetesprestigio.com.br) após o deploy
+
+| | Teste | Resultado |
+|---|---|---|
+| ✅ | `GET /api/voucher` sem login | 401 (antes devolvia os 560 leads a qualquer um) |
+| ✅ | `PATCH` e `DELETE` sem login | 401 nos dois |
+| ✅ | `/caixa-prestigio-7918` sem cookie | 307 → `/painel-login` |
+| ✅ | Login do painel com a `PAINEL_SENHA` da Vercel | entra e carrega os 560 |
+| ✅ | **`POST /api/voucher` sem login** | 201 — a campanha funciona |
+| ✅ | `/santamaria`, `/`, `/painel-login` | 200 |
+| ✅ | `/api/voucher/contagem` | público, só agregados |
+
+O registro criado no teste do POST em produção foi apagado: base em 560 / 134
+utilizados / 0 na campanha nova.
 
 ---
 
