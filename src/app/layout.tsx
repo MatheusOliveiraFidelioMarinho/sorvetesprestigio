@@ -10,6 +10,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  // Sem isso o Next resolve a imagem de Open Graph como localhost e o preview
+  // do link quebra no WhatsApp / Facebook.
+  metadataBase: new URL("https://www.sorvetesprestigio.com.br"),
   title: "Ganhe um Picolé Grátis | Sorvetes Prestígio",
   description: "Cadastre-se gratuitamente e receba seu voucher exclusivo para retirar um picolé promocional na Sorvetes Prestígio em Santa Maria - DF.",
   openGraph: {

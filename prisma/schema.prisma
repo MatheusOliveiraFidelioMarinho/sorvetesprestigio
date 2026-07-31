@@ -17,4 +17,24 @@ model Lead {
   status         String   @default("Não Utilizado")
   origem         String   @default("Direto/Orgânico")
   unidade        String   @default("Unidade Santa Maria")
+
+  // Campanha da qual o lead participou. Os 560 registros existentes recebem
+  // o default e passam a pertencer à campanha do picolé.
+  campanha String @default("picole-2026-07")
+  oferta   String @default("Picolé Grátis")
+
+  // Atribuição de anúncio (qual criativo trouxe o cliente que resgatou).
+  utmCampaign String?
+  utmContent  String?
+  utmSource   String?
+
+  // Validade do voucher, calculada no servidor a partir da campanha.
+  expiraEm DateTime?
+
+  // A duplicidade passa a ser POR CAMPANHA, não global por telefone.
+  // É isso que permite que os participantes do picolé participem também
+  // do cartão fidelidade.
+  @@unique([whatsapp, campanha])
+  @@index([campanha])
+  @@index([status])
 }

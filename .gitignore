@@ -33,6 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# backups do banco — contêm dados pessoais dos cadastrados (nome, WhatsApp,
+# data de nascimento). NUNCA versionar.
+/backups/
+*.csv
+
 # vercel
 .vercel
 
