@@ -38,6 +38,11 @@ yarn-error.log*
 /backups/
 *.csv
 
+# briefings internos da agência (ALTERACOES-*, ALTERACAO-*). Este repositório é
+# público — documento de planejamento não entra aqui.
+/ALTERACAO-*.txt
+/ALTERACOES-*.txt
+
 # vercel
 .vercel
 

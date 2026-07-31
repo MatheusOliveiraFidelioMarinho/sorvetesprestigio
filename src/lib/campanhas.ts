@@ -46,9 +46,12 @@ export const CAMPANHAS: Record<string, CampanhaConfig> = {
     voucherDigitos: 5,
   },
   [CAMPANHA_SANTA_MARIA]: {
+    // O `id` continua "fidelidade-2026-08" mesmo com a oferta tendo mudado: ele
+    // já está gravado na coluna `campanha` do banco e é o que o filtro do painel
+    // usa. Quem aparece na tela é o rotuloPainel.
     id: CAMPANHA_SANTA_MARIA,
-    oferta: "Cartão Fidelidade",
-    rotuloPainel: "Cartão Fidelidade (ago)",
+    oferta: "Picolé Grátis + 2 Carimbos",
+    rotuloPainel: "Picolé + Carimbos (ago)",
     validadeHoras: 72,
     validadeTextoCurto: "72 horas",
     validadeTextoExtenso: "72 (setenta e duas) horas",
