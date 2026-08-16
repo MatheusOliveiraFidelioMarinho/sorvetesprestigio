@@ -379,17 +379,6 @@ export default function LandingVoucher({ config }: { config: LandingConfig }) {
           </div>
         </div>
 
-        <div className="relative w-full max-w-[280px] aspect-square flex items-center justify-center">
-          <div className="relative w-full h-full transition duration-700 hover:scale-105 animate-pulse">
-            <Image
-              src="/logo.png"
-              alt="Sorvetes Prestígio Logo"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-        </div>
       </section>
 
       {/* SEÇÃO DE ESCASSEZ — número real, vindo do banco. Sem limite definido,
@@ -443,39 +432,14 @@ export default function LandingVoucher({ config }: { config: LandingConfig }) {
         </div>
       </section>
 
-      {/* SEÇÃO BENEFÍCIOS */}
-      <section className="w-full bg-slate-50 py-12 md:py-16">
-        <div className="max-w-5xl mx-auto px-4 text-center space-y-10">
-          <div className="space-y-2">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-brand-dark">
-              {config.tituloBeneficios}
-            </h2>
-            <p className="text-slate-500 text-sm md:text-base max-w-xl mx-auto">
-              {config.subtituloBeneficios}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {config.beneficios.map((beneficio, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-2xl shadow-xs border border-slate-100 flex flex-col items-center md:items-start text-center md:text-left space-y-3 hover:-translate-y-1 transition duration-300"
-              >
-                <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-blue">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <h4 className="font-bold text-brand-dark text-base">{beneficio.text}</h4>
-                <p className="text-sm text-slate-500">{beneficio.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SEÇÃO DO FORMULÁRIO / TELA DE VOUCHER */}
+      {/* SEÇÃO DO FORMULÁRIO / TELA DE VOUCHER
+          Fica logo abaixo do herói de propósito: com os benefícios na frente, o
+          formulário começava a 2.170px de uma página de 3.418px — cerca de três
+          telas de rolagem no celular antes de existir qualquer campo. Os
+          benefícios agora vêm depois, como reforço para quem não converteu. */}
       <section
         ref={formRef}
-        className="w-full py-16 md:py-24 px-4 bg-gradient-to-b from-white to-brand-light/30"
+        className="w-full pt-6 pb-16 md:pt-10 md:pb-24 px-4 bg-gradient-to-b from-white to-brand-light/30"
       >
         <div className="max-w-xl mx-auto">
           <AnimatePresence mode="wait">
@@ -759,6 +723,48 @@ export default function LandingVoucher({ config }: { config: LandingConfig }) {
         </div>
       </section>
 
+      {/* SEÇÃO BENEFÍCIOS — reforço para quem rolou sem preencher. O botão do
+          fim traz a pessoa de volta ao formulário sem precisar rolar de volta. */}
+      <section className="w-full bg-slate-50 py-12 md:py-16">
+        <div className="max-w-5xl mx-auto px-4 text-center space-y-10">
+          <div className="space-y-2">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-brand-dark">
+              {config.tituloBeneficios}
+            </h2>
+            <p className="text-slate-500 text-sm md:text-base max-w-xl mx-auto">
+              {config.subtituloBeneficios}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {config.beneficios.map((beneficio, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-2xl shadow-xs border border-slate-100 flex flex-col items-center md:items-start text-center md:text-left space-y-3 hover:-translate-y-1 transition duration-300"
+              >
+                <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-blue">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <h4 className="font-bold text-brand-dark text-base">{beneficio.text}</h4>
+                <p className="text-sm text-slate-500">{beneficio.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {!formSubmitted && !campanhaEncerrada && (
+            <div className="flex justify-center pt-2 print:hidden">
+              <button
+                onClick={scrollToForm}
+                className="w-full sm:w-auto px-12 py-5 bg-brand-accent hover:bg-yellow-400 text-brand-dark font-black text-lg rounded-2xl transition duration-300 transform hover:scale-105 active:scale-95 shadow-xl border-4 border-yellow-300 flex items-center justify-center gap-3 cursor-pointer uppercase tracking-wider"
+              >
+                {config.ctaHero}
+                <ArrowRight className="w-5 h-5 text-brand-dark" />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* SEÇÃO REGULAMENTO */}
       <section className="w-full bg-slate-50 py-12 px-4 border-t border-slate-200">
         <div className="max-w-2xl mx-auto space-y-6">
@@ -777,6 +783,15 @@ export default function LandingVoucher({ config }: { config: LandingConfig }) {
 
       {/* FOOTER */}
       <footer className="w-full bg-white border-t border-brand-light py-8 px-4 text-center space-y-4">
+        {/* A marca saiu do herói para o formulário subir; fecha aqui embaixo. */}
+        <div className="relative w-full max-w-[150px] aspect-square mx-auto">
+          <Image
+            src="/logo.png"
+            alt="Sorvetes Prestígio Logo"
+            fill
+            className="object-contain"
+          />
+        </div>
         <p className="text-xs text-slate-500 font-medium">
           © {new Date().getFullYear()} Sorvetes Prestígio. Todos os direitos reservados.
         </p>
