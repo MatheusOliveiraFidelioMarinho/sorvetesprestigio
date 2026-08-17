@@ -16,6 +16,7 @@ import {
   Share2,
   FileText,
   Loader2,
+  IceCream,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { formataExpiracao, getCampanha } from "@/lib/campanhas";
@@ -396,8 +397,15 @@ export default function LandingVoucher({ config }: { config: LandingConfig }) {
           a escassez vira a validade do voucher (verdadeira e verificável). */}
       <section className="w-full max-w-3xl mx-auto px-4 py-6">
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-3xl p-6 md:p-8 flex items-center gap-6 shadow-sm justify-center">
+          {/* Triângulo de alerta só quando a mensagem é de fato de urgência.
+              Num bloco positivo ("sem limite de quantidade") ele contradiz o
+              texto e faz a peça parecer um aviso de problema. */}
           <div className="p-4 bg-brand-accent/30 rounded-2xl text-amber-600">
-            <AlertTriangle className="w-10 h-10" />
+            {config.destaqueTitulo && !(contagem && contagem.limite !== null) ? (
+              <IceCream className="w-10 h-10" />
+            ) : (
+              <AlertTriangle className="w-10 h-10" />
+            )}
           </div>
           <div className="text-center space-y-2">
             {contagem && contagem.limite !== null ? (

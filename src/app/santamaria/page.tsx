@@ -41,7 +41,7 @@ const config: LandingConfig = {
   // O picolé de R$ 1 já é praticado na loja: não é oferta escassa que o cupom
   // destrava. Então o bloco de destaque carrega o argumento real de ir até lá —
   // quantidade livre e variedade — em vez de uma contagem regressiva falsa.
-  destaqueTitulo: "🍦 SEM LIMITE DE QUANTIDADE",
+  destaqueTitulo: "SEM LIMITE DE QUANTIDADE",
   destaqueTexto:
     "Leve um, leve dez. Diversos sabores no freezer da loja, todos ao mesmo preço de R$ 1.",
 
