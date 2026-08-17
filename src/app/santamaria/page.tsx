@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import LandingVoucher, { type LandingConfig } from "@/components/LandingVoucher";
-import { CAMPANHA_SANTA_MARIA, getCampanha } from "@/lib/campanhas";
+import { CAMPANHA_SANTA_MARIA_R1, getCampanha } from "@/lib/campanhas";
 
-const campanha = getCampanha(CAMPANHA_SANTA_MARIA);
+const campanha = getCampanha(CAMPANHA_SANTA_MARIA_R1);
 
-const TITULO_SEO = "Picolé Grátis + 2 Carimbos | Sorvetes Prestígio Santa Maria";
+const TITULO_SEO = "Picolé por R$ 1 | Sorvetes Prestígio Santa Maria";
 const DESCRICAO_SEO =
-  "Cadastre-se, gaste R$ 15,00 na Sorvetes Prestígio de Santa Maria e leve um picolé grátis + 2 carimbos no cartão fidelidade.";
+  "Cadastre-se e retire seu voucher: picolé por R$ 1 na Sorvetes Prestígio de Santa Maria. Mais de 20 sabores.";
 
 export const metadata: Metadata = {
   title: TITULO_SEO,
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         url: "/capa.png",
         width: 1200,
         height: 630,
-        alt: "Picolé grátis + 2 carimbos na Sorvetes Prestígio Santa Maria",
+        alt: "Picolé por R$ 1 na Sorvetes Prestígio Santa Maria",
       },
     ],
   },
@@ -29,10 +29,10 @@ const config: LandingConfig = {
   campanha: campanha.id,
   unidadeFixa: "Unidade Santa Maria",
 
-  tituloPrefixo: "GANHE UM",
-  tituloDestaque: "PICOLÉ GRÁTIS",
+  tituloPrefixo: "LEVE UM",
+  tituloDestaque: "PICOLÉ POR R$ 1",
   subtitulo:
-    "Cadastre-se, gaste R$ 15,00 na loja e saia com um picolé grátis e 2 carimbos no seu cartão fidelidade.",
+    "Cadastre-se, retire seu voucher e escolha entre mais de 20 sabores na Sorvetes Prestígio de Santa Maria.",
 
   ctaHero: "QUERO MEU PICOLÉ",
   ctaFormulario: "QUERO MEU PICOLÉ",
@@ -40,19 +40,19 @@ const config: LandingConfig = {
 
   tituloBeneficios: "Por que participar?",
   subtituloBeneficios:
-    "Pegar o seu picolé grátis é simples, rápido e leva menos de 1 minuto. Veja as vantagens:",
+    "Pegar o seu picolé por R$ 1 é simples, rápido e leva menos de 1 minuto. Veja as vantagens:",
   beneficios: [
     {
-      text: "Picolé grátis na hora",
-      desc: "Consumiu R$ 15,00? O picolé sai na mesma visita.",
+      text: "Picolé por R$ 1",
+      desc: "O preço vale na hora, direto no caixa.",
     },
     {
-      text: "2 carimbos de brinde",
-      desc: "Você já começa o cartão fidelidade com 2 de 10 preenchidos.",
+      text: "Mais de 20 sabores",
+      desc: "Você escolhe o seu no freezer da loja.",
     },
     {
-      text: "10 carimbos = 300 g grátis",
-      desc: "Cada compra acima de R$ 15,00 vale 1 carimbo. Faltam só 8.",
+      text: "Sem consumo mínimo",
+      desc: "O voucher vale sozinho. É só chegar e apresentar.",
     },
     {
       text: "Cadastro em menos de 1 minuto",
@@ -68,7 +68,7 @@ const config: LandingConfig = {
     },
   ],
 
-  tituloFormulario: "Pegue seu picolé grátis",
+  tituloFormulario: "Pegue seu picolé por R$ 1",
   subtituloFormulario: "Preencha os dados abaixo para gerar seu voucher exclusivo.",
   labelUnidade: "Unidade de Retirada",
   erroUnidade: "Unidade de retirada indisponível. Recarregue a página.",
@@ -76,31 +76,30 @@ const config: LandingConfig = {
   instrucoes: [
     { destaque: "Tire um print", depois: "desta tela." },
     { antes: "Vá até a", destaque: "Sorvetes Prestígio de Santa Maria." },
-    { antes: "Consuma", destaque: "R$ 15,00 ou mais", depois: "na loja." },
+    { antes: "Escolha seu sabor entre", destaque: "mais de 20 opções." },
     {
       destaque: "Apresente o voucher",
       depois: "no caixa e informe o telefone cadastrado.",
     },
     {
-      destaque: "Receba seu picolé grátis + 2 carimbos",
-      depois: "no cartão fidelidade.",
+      destaque: "Leve seu picolé por R$ 1",
+      depois: "e aproveite.",
     },
   ],
 
   regulamento: [
-    "Válido para 1 (um) picolé grátis por número de telefone cadastrado.",
-    "Válido exclusivamente mediante consumo mínimo de R$ 15,00 na loja.",
+    "Válido para 1 (um) picolé ao preço promocional de R$ 1,00 por número de telefone cadastrado.",
+    "Não exige consumo mínimo.",
     "Exclusivo da unidade Santa Maria.",
     `O voucher tem validade de ${campanha.validadeTextoExtenso} a partir do cadastro.`,
     "Necessário apresentar o voucher no momento do atendimento.",
     "A verificação no caixa é feita pelo telefone cadastrado.",
-    "Os 2 carimbos de brinde são creditados no cartão fidelidade no ato da retirada. O cartão completo (10 carimbos) dá direito a 300 g de sorvete grátis, sendo que cada carimbo corresponde a uma compra acima de R$ 15,00.",
     "Promoção sujeita à disponibilidade de estoque dos picolés participantes.",
     "Não cumulativa com outras promoções vigentes.",
   ],
 
   textoCompartilhar:
-    "Ganhei um picolé grátis na Sorvetes Prestígio de Santa Maria! Garanta o seu:",
+    "Peguei meu picolé por R$ 1 na Sorvetes Prestígio de Santa Maria! Garanta o seu:",
   rodapeVoucher: "Campanha exclusiva Sorvetes Prestígio - Unidade Santa Maria, DF.",
 };
 

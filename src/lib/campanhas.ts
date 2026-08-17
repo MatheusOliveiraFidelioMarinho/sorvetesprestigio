@@ -32,6 +32,7 @@ export type CampanhaConfig = {
 
 export const CAMPANHA_PADRAO = "picole-2026-07";
 export const CAMPANHA_SANTA_MARIA = "fidelidade-2026-08";
+export const CAMPANHA_SANTA_MARIA_R1 = "picole-1real-2026-08";
 
 export const CAMPANHAS: Record<string, CampanhaConfig> = {
   [CAMPANHA_PADRAO]: {
@@ -62,6 +63,31 @@ export const CAMPANHAS: Record<string, CampanhaConfig> = {
     // depois do limite, sem precisar mexer em mais nada.
     limite: null,
     voucherPrefixo: "PRESTIGIO-SM",
+    voucherDigitos: 6,
+  },
+  [CAMPANHA_SANTA_MARIA_R1]: {
+    // Fechamento de agosto (18 a 31/08/2026). O cliente pediu para tirar do ar a
+    // oferta do cartão fidelidade; a oferta do resto do mês é picolé por R$ 1,
+    // sem nenhuma menção a "grátis", carimbo ou cartão.
+    //
+    // Entrada NOVA em vez de edição da anterior, de propósito: os vouchers de
+    // "fidelidade-2026-08" já emitidos continuam válidos por 72h e precisam
+    // seguir aparecendo no painel do caixa com a oferta que foi prometida a
+    // quem se cadastrou. Sobrescrever aquela entrada reescreveria o passado.
+    id: CAMPANHA_SANTA_MARIA_R1,
+    oferta: "Picolé por R$ 1",
+    rotuloPainel: "Picolé R$ 1 (ago)",
+    validadeHoras: 72,
+    validadeTextoCurto: "72 horas",
+    validadeTextoExtenso: "72 (setenta e duas) horas",
+    // Sem limite: a escassez da página é a validade de 72h, que é verdadeira e
+    // verificável. Para limitar, trocar null por um número — a landing volta a
+    // exibir "Restam X de Y" e a API recusa cadastros depois do limite.
+    limite: null,
+    // Prefixo próprio para o caixa distinguir de bate-pronto qual oferta o
+    // cliente tem na mão: PRESTIGIO-SM é picolé grátis + carimbos,
+    // PRESTIGIO-SM1 é picolé por R$ 1.
+    voucherPrefixo: "PRESTIGIO-SM1",
     voucherDigitos: 6,
   },
 };
