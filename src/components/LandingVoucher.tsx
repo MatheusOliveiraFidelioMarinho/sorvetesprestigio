@@ -58,6 +58,17 @@ export type LandingConfig = {
   instrucoes: Instrucao[];
   regulamento: string[];
 
+  /**
+   * Bloco em destaque logo abaixo do herói. Sem estes campos, ele exibe a
+   * escassez padrão (limite de vouchers, ou a validade do voucher).
+   *
+   * Preencher quando a oferta NÃO for escassa — anunciar "tempo limitado" numa
+   * promoção que é permanente na loja é falso, e o cliente descobre na porta.
+   * Aí o espaço passa a carregar o argumento real da campanha.
+   */
+  destaqueTitulo?: string;
+  destaqueTexto?: string;
+
   textoCompartilhar: string;
   rodapeVoucher: string;
 };
@@ -413,6 +424,17 @@ export default function LandingVoucher({ config }: { config: LandingConfig }) {
                     </>
                   )}
                 </p>
+              </>
+            ) : config.destaqueTitulo ? (
+              <>
+                <h3 className="text-xl md:text-2xl font-extrabold text-brand-dark">
+                  {config.destaqueTitulo}
+                </h3>
+                {config.destaqueTexto && (
+                  <p className="text-sm md:text-base text-slate-700 font-semibold">
+                    {config.destaqueTexto}
+                  </p>
+                )}
               </>
             ) : (
               <>

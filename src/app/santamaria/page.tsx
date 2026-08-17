@@ -6,7 +6,7 @@ const campanha = getCampanha(CAMPANHA_SANTA_MARIA_R1);
 
 const TITULO_SEO = "Picolé por R$ 1 | Sorvetes Prestígio Santa Maria";
 const DESCRICAO_SEO =
-  "Cadastre-se e retire seu voucher: picolé por R$ 1 na Sorvetes Prestígio de Santa Maria. Mais de 20 sabores.";
+  "Picolé por R$ 1 na Sorvetes Prestígio de Santa Maria. Diversos sabores e sem limite de quantidade: leve quantos quiser.";
 
 export const metadata: Metadata = {
   title: TITULO_SEO,
@@ -29,77 +29,84 @@ const config: LandingConfig = {
   campanha: campanha.id,
   unidadeFixa: "Unidade Santa Maria",
 
-  tituloPrefixo: "LEVE UM",
+  tituloPrefixo: "LEVE QUANTOS QUISER:",
   tituloDestaque: "PICOLÉ POR R$ 1",
   subtitulo:
-    "Cadastre-se, retire seu voucher e escolha entre mais de 20 sabores na Sorvetes Prestígio de Santa Maria.",
+    "Diversos sabores na Sorvetes Prestígio de Santa Maria, todos por R$ 1. Sem limite de quantidade e sem consumo mínimo.",
 
-  ctaHero: "QUERO MEU PICOLÉ",
-  ctaFormulario: "QUERO MEU PICOLÉ",
-  ctaCarregando: "GERANDO VOUCHER...",
+  ctaHero: "QUERO MEU CUPOM",
+  ctaFormulario: "QUERO MEU CUPOM",
+  ctaCarregando: "GERANDO CUPOM...",
 
-  tituloBeneficios: "Por que participar?",
+  // O picolé de R$ 1 já é praticado na loja: não é oferta escassa que o cupom
+  // destrava. Então o bloco de destaque carrega o argumento real de ir até lá —
+  // quantidade livre e variedade — em vez de uma contagem regressiva falsa.
+  destaqueTitulo: "🍦 SEM LIMITE DE QUANTIDADE",
+  destaqueTexto:
+    "Leve um, leve dez. Diversos sabores no freezer da loja, todos ao mesmo preço de R$ 1.",
+
+  tituloBeneficios: "Por que vale a visita?",
   subtituloBeneficios:
-    "Pegar o seu picolé por R$ 1 é simples, rápido e leva menos de 1 minuto. Veja as vantagens:",
+    "O cadastro leva menos de 1 minuto e já te coloca na lista de promoções da unidade. Veja o que te espera na loja:",
   beneficios: [
     {
       text: "Picolé por R$ 1",
-      desc: "O preço vale na hora, direto no caixa.",
+      desc: "Preço direto no caixa da unidade Santa Maria.",
     },
     {
-      text: "Mais de 20 sabores",
-      desc: "Você escolhe o seu no freezer da loja.",
+      text: "Diversos sabores",
+      desc: "Você escolhe no freezer da loja, com mais de 20 opções.",
+    },
+    {
+      text: "Sem limite de quantidade",
+      desc: "Leve um ou leve dez. O preço por picolé é o mesmo.",
     },
     {
       text: "Sem consumo mínimo",
-      desc: "O voucher vale sozinho. É só chegar e apresentar.",
+      desc: "Não precisa comprar mais nada para levar o seu.",
     },
     {
       text: "Cadastro em menos de 1 minuto",
-      desc: "Sem app e sem burocracia. O voucher aparece na hora.",
+      desc: "Sem app e sem burocracia. O cupom aparece na hora.",
     },
     {
-      text: "Exclusivo da unidade Santa Maria",
-      desc: "Feito para quem é do bairro.",
-    },
-    {
-      text: "Retirada simples no caixa",
-      desc: "É só mostrar a tela do voucher no atendimento.",
+      text: "Promoções no seu WhatsApp",
+      desc: "Você fica sabendo das novidades da unidade Santa Maria antes.",
     },
   ],
 
-  tituloFormulario: "Pegue seu picolé por R$ 1",
-  subtituloFormulario: "Preencha os dados abaixo para gerar seu voucher exclusivo.",
+  tituloFormulario: "Pegue seu cupom",
+  subtituloFormulario:
+    "Preencha os dados abaixo, apresente o cupom no caixa e leve quantos picolés quiser por R$ 1 cada.",
   labelUnidade: "Unidade de Retirada",
   erroUnidade: "Unidade de retirada indisponível. Recarregue a página.",
 
   instrucoes: [
     { destaque: "Tire um print", depois: "desta tela." },
     { antes: "Vá até a", destaque: "Sorvetes Prestígio de Santa Maria." },
-    { antes: "Escolha seu sabor entre", destaque: "mais de 20 opções." },
+    { antes: "Escolha seus sabores entre", destaque: "mais de 20 opções." },
     {
-      destaque: "Apresente o voucher",
+      destaque: "Apresente o cupom",
       depois: "no caixa e informe o telefone cadastrado.",
     },
     {
-      destaque: "Leve seu picolé por R$ 1",
-      depois: "e aproveite.",
+      destaque: "Leve quantos picolés quiser",
+      depois: "por R$ 1 cada.",
     },
   ],
 
   regulamento: [
-    "Válido para 1 (um) picolé ao preço promocional de R$ 1,00 por número de telefone cadastrado.",
+    "Picolés participantes ao preço promocional de R$ 1,00 (um real) cada.",
+    "Sem limite de quantidade por pessoa.",
     "Não exige consumo mínimo.",
-    "Exclusivo da unidade Santa Maria.",
-    `O voucher tem validade de ${campanha.validadeTextoExtenso} a partir do cadastro.`,
-    "Necessário apresentar o voucher no momento do atendimento.",
+    "Válido na unidade Santa Maria.",
     "A verificação no caixa é feita pelo telefone cadastrado.",
-    "Promoção sujeita à disponibilidade de estoque dos picolés participantes.",
+    "Promoção sujeita à disponibilidade de estoque e aos sabores participantes.",
     "Não cumulativa com outras promoções vigentes.",
   ],
 
   textoCompartilhar:
-    "Peguei meu picolé por R$ 1 na Sorvetes Prestígio de Santa Maria! Garanta o seu:",
+    "Picolé por R$ 1 na Sorvetes Prestígio de Santa Maria, e pode levar quantos quiser! Pega o teu cupom:",
   rodapeVoucher: "Campanha exclusiva Sorvetes Prestígio - Unidade Santa Maria, DF.",
 };
 

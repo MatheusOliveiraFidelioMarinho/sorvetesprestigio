@@ -77,9 +77,13 @@ export const CAMPANHAS: Record<string, CampanhaConfig> = {
     id: CAMPANHA_SANTA_MARIA_R1,
     oferta: "Picolé por R$ 1",
     rotuloPainel: "Picolé R$ 1 (ago)",
-    validadeHoras: 72,
-    validadeTextoCurto: "72 horas",
-    validadeTextoExtenso: "72 (setenta e duas) horas",
+    // Validade longa de propósito. Nas campanhas anteriores as 72h eram a
+    // escassez da página; aqui o picolé de R$ 1 já é praticado na loja, então
+    // não há escassez para anunciar e um prazo curto só criaria atrito — a
+    // trava de duplicidade por telefone impede recadastro depois que expira.
+    validadeHoras: 336,
+    validadeTextoCurto: "14 dias",
+    validadeTextoExtenso: "14 (quatorze) dias corridos",
     // Sem limite: a escassez da página é a validade de 72h, que é verdadeira e
     // verificável. Para limitar, trocar null por um número — a landing volta a
     // exibir "Restam X de Y" e a API recusa cadastros depois do limite.
